@@ -61,9 +61,6 @@ PIECE_PROMOTED = [
       PROM_PAWN, PROM_LANCE, PROM_KNIGHT, PROM_SILVER,
            None,
     PROM_BISHOP,  PROM_ROOK,
-           None,
-           None,       None,        None,        None,
-           None,       None,
 ];
 
 PIECE_SYMBOLS = ['',   'p',  'l',  'n',  's', 'g',  'b',  'r', 'k',
@@ -76,9 +73,9 @@ PIECE_JAPANESE_SYMBOLS = [
 
 assert len(PIECE_TYPES_WITH_NONE) == \
        len(MAX_PIECES_IN_HAND) == \
-       len(PIECE_PROMOTED) == \
        len(PIECE_SYMBOLS) == \
        len(PIECE_JAPANESE_SYMBOLS)
+assert len(PIECE_PROMOTED) < len(PIECE_TYPES_WITH_NONE)
 
 NUMBER_JAPANESE_NUMBER_SYMBOLS = [
     '\uff10', '\uff11', '\uff12', '\uff13', '\uff14',
