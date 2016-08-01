@@ -757,24 +757,7 @@ class Board(object):
         self.transpositions = collections.Counter((self.zobrist_hash(), ))
 
     def clear(self):
-        self.piece_bb = [
-                BB_VOID,                       # NONE
-                BB_VOID,                       # PAWN
-                BB_VOID,                       # LANCE
-                BB_VOID,                       # KNIGHT
-                BB_VOID,                       # SILVER
-                BB_VOID,                       # GOLD
-                BB_VOID,                       # BISHOP
-                BB_VOID,                       # ROOK
-                BB_VOID,                       # KING
-                BB_VOID,                       # PROM_PAWN
-                BB_VOID,                       # PROM_LANCE
-                BB_VOID,                       # PROM_KNIGHT
-                BB_VOID,                       # PROM_SILVER
-                BB_VOID,                       # PROM_BISHOP
-                BB_VOID,                       # PROM_ROOK
-        ]
-
+        self.piece_bb = [BB_VOID] * len(PIECE_TYPES_WITH_NONE)
         self.pieces_in_hand = [collections.Counter(), collections.Counter()]
 
         self.occupied = Occupied(BB_VOID, BB_VOID)
