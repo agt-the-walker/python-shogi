@@ -34,14 +34,14 @@ class BoardTestCase(unittest.TestCase):
     def test_checkmate(self):
         # test basic checkmate for both sides
         board = shogi.Board('4k4/4G4/4P4/9/9/9/9/9/9 w - 1')
-        self.assertTrue(board.is_checkmate)
+        self.assertTrue(board.is_checkmate())
         board = shogi.Board('9/9/9/9/9/9/4p4/4g4/4K4 b - 1')
-        self.assertTrue(board.is_checkmate)
+        self.assertTrue(board.is_checkmate())
 
     def test_stalemate(self):
         board = shogi.Board('+R+N+SGKG+S+N+R/+B+N+SG+LG+S+N+B/P+LPP+LPP+LP/1P2P2P1/9/9/9/9/6k2 b - 200')
         self.assertEqual(len(board.pseudo_legal_moves), 0)
-        self.assertTrue(board.is_stalemate)
+        self.assertTrue(board.is_stalemate())
 
     def test_bishop_center(self):
         board = shogi.Board('9/9/9/9/4B4/9/9/9/9 b - 1')
