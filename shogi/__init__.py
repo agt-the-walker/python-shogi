@@ -73,6 +73,13 @@ PIECE_JAPANESE_SYMBOLS = [
     '\u6b69', '\u9999', '\u6842', '\u9280', '\u91d1', '\u89d2', '\u98db',
     '\u7389', '\u3068', '\u674f', '\u572d', '\u5168', '\u99ac', '\u9f8d'
 ]
+
+assert len(PIECE_TYPES_WITH_NONE) == \
+       len(MAX_PIECES_IN_HAND) == \
+       len(PIECE_PROMOTED) == \
+       len(PIECE_SYMBOLS) == \
+       len(PIECE_JAPANESE_SYMBOLS)
+
 NUMBER_JAPANESE_NUMBER_SYMBOLS = [
     '\uff10', '\uff11', '\uff12', '\uff13', '\uff14',
     '\uff15', '\uff16', '\uff17', '\uff18', '\uff19'

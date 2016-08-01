@@ -34,6 +34,8 @@ BLOCK_RECV_SLEEP_DURATION = 0.1
 COLOR_SYMBOLS = ['+', '-']
 PIECE_SYMBOLS = ['* ', 'FU', 'KY', 'KE', 'GI', 'KI', 'KA', 'HI', 'OU',
                        'TO', 'NY', 'NK', 'NG',       'UM', 'RY']
+assert len(PIECE_SYMBOLS) == len(shogi.PIECE_SYMBOLS)
+
 SQUARE_NAMES = [
     '91', '81', '71', '61', '51', '41', '31', '21', '11',
     '92', '82', '72', '62', '52', '42', '32', '22', '12',
