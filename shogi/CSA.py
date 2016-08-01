@@ -178,7 +178,7 @@ class Parser:
     def parse_position(position_block_lines):
         # ex.) P1-KY-KE-GI-KI-OU-KI-GI-KE-KY
         position = {
-            'pieces': [0 for x in range(81)],
+            'pieces': [0 for x in range(shogi.NB_SQUARES)],
             'pieces_in_hand': [
                 collections.Counter(),
                 collections.Counter(),
