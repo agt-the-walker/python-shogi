@@ -32,7 +32,10 @@ class BoardTestCase(unittest.TestCase):
         self.assertEqual(board_none.turn, shogi.BLACK)
 
     def test_checkmate(self):
-        board = shogi.Board('4k4/4G4/4P4/9/9/9/9/9/9 b - 1')
+        # test basic checkmate for both sides
+        board = shogi.Board('4k4/4G4/4P4/9/9/9/9/9/9 w - 1')
+        self.assertTrue(board.is_checkmate)
+        board = shogi.Board('9/9/9/9/9/9/4p4/4g4/4K4 b - 1')
         self.assertTrue(board.is_checkmate)
 
     def test_stalemate(self):
