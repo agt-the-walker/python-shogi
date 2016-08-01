@@ -1325,7 +1325,6 @@ class Board(object):
             self.turn = BLACK
 
         # Set the pieces in hand
-        self.pieces_in_hand = [collections.Counter(), collections.Counter()]
         if parts[2] != '-':
             piece_count = 0
             for c in parts[2]:
