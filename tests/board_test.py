@@ -30,18 +30,21 @@ class BoardTestCase(unittest.TestCase):
         self.assertEqual(str(board_none), str(board_sfen))
         self.assertEqual(repr(board_none), repr(board_sfen))
         self.assertEqual(board_none.turn, shogi.BLACK)
+        self.assertFalse(board.is_game_over())
 
     def test_checkmate(self):
         # test basic checkmate for both sides
-        board = shogi.Board('4k4/4G4/4P4/9/9/9/9/9/9 w - 1')
-        self.assertTrue(board.is_checkmate())
-        board = shogi.Board('9/9/9/9/9/9/4p4/4g4/4K4 b - 1')
-        self.assertTrue(board.is_checkmate())
+        for sfen in ['4k4/4G4/4P4/9/9/9/9/9/9  w - 1', '9/9/9/9/9/9/4p4/4g4/4K4 b - 1']:
+            board = shogi.Board(sfen)
+            self.assertTrue(board.is_game_over())
+            self.assertTrue(board.is_checkmate())
+            self.assertFalse(board.is_stalemate())
 
     def test_stalemate(self):
         board = shogi.Board('+R+N+SGKG+S+N+R/+B+N+SG+LG+S+N+B/P+LPP+LPP+LP/1P2P2P1/9/9/9/9/6k2 b - 200')
         self.assertEqual(len(board.pseudo_legal_moves), 0)
         self.assertTrue(board.is_stalemate())
+        self.assertFalse(board.is_checkmate())
 
     def test_bishop_center(self):
         board = shogi.Board('9/9/9/9/4B4/9/9/9/9 b - 1')
@@ -135,8 +138,10 @@ class BoardTestCase(unittest.TestCase):
         for move_str in ['9d9e', '8h6h', '8b6b', '6h8h', '6b8b', '8h6h', '8b6b', '6h8h',
                          '6b8b', '8h6h', '8b6b', '6h8h']:
             board.push(shogi.Move.from_usi(move_str))
+        self.assertFalse(board.is_game_over())
         self.assertFalse(board.is_fourfold_repetition())
         board.push(shogi.Move.from_usi('6b8b'))
+        self.assertTrue(board.is_game_over())
         self.assertTrue(board.is_fourfold_repetition())
 
 if __name__ == '__main__':
