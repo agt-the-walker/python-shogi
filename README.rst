@@ -1,14 +1,14 @@
 python-shogi: a pure Python shogi library
 =========================================
 
-.. image:: https://travis-ci.org/gunyarakun/python-shogi.svg
-    :target: https://travis-ci.org/gunyarakun/python-shogi
+.. image:: https://travis-ci.org/agt-the-walker/python-shogi.svg
+    :target: https://travis-ci.org/agt-the-walker/python-shogi
 
-.. image:: https://coveralls.io/repos/gunyarakun/python-shogi/badge.svg
-    :target: https://coveralls.io/r/gunyarakun/python-shogi
+.. image:: https://coveralls.io/repos/agt-the-walker/python-shogi/badge.svg
+    :target: https://coveralls.io/r/agt-the-walker/python-shogi
 
-.. image:: https://landscape.io/github/gunyarakun/python-shogi/prototype/landscape.svg?style=flat
-    :target: https://landscape.io/github/gunyarakun/python-shogi
+.. image:: https://landscape.io/github/agt-the-walker/python-shogi/prototype/landscape.svg?style=flat
+    :target: https://landscape.io/github/agt-the-walker/python-shogi
 
 .. image:: https://badge.fury.io/py/python-shogi.svg
     :target: https://pypi.python.org/pypi/python-shogi
