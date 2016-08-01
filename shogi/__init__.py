@@ -621,7 +621,7 @@ class Move(object):
         return self.usi()
 
     def __hash__(self):
-        # 7 bit is enought to represent NB_SQUARES patterns
+        # 7 bit is enough to represent NB_SQUARES patterns
         return self.to_square | (self.from_square or (NB_SQUARES + self.drop_piece_type)) << 7 | self.promotion << 14
 
     @classmethod
