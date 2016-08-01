@@ -30,7 +30,7 @@ class BoardTestCase(unittest.TestCase):
         self.assertEqual(str(board_none), str(board_sfen))
         self.assertEqual(repr(board_none), repr(board_sfen))
         self.assertEqual(board_none.turn, shogi.BLACK)
-        self.assertFalse(board.is_game_over())
+        self.assertFalse(board_sfen.is_game_over())
 
     def test_checkmate(self):
         # test basic checkmate for both sides
