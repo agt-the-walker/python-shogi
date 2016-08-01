@@ -24,6 +24,8 @@ __email__ = 'tasuku-s-github@titech.ac'
 __version__ = '0.0.1'
 
 import collections
+import functools
+import math
 import re
 
 COLORS = [BLACK, WHITE] = range(2)
@@ -85,6 +87,15 @@ NUMBER_JAPANESE_KANJI_SYMBOLS = [
 STARTING_SFEN = 'lnsgkgsnl/1r5b1/ppppppppp/9/9/9/PPPPPPPPP/1B5R1/LNSGKGSNL b - 1'
 
 NB_SQUARES = 81
+ZOBRIST_TURN_OFFSET = NB_SQUARES * len(PIECE_TYPES) * 2
+ZOBRIST_IN_HAND_OFFSET = ZOBRIST_TURN_OFFSET + 1
+
+NB_DIFFERENT_HANDS_FOR_BLACK = functools.reduce(lambda product, max_in_hand:
+                                                       product * (max_in_hand+1),
+                                                MAX_PIECES_IN_HAND, 1)
+LOG2_DIFFERENT_HANDS_FOR_BLACK = math.floor(math.log(NB_DIFFERENT_HANDS_FOR_BLACK, 2)) + 1
+ZOBRIST_SIZE = ZOBRIST_IN_HAND_OFFSET + LOG2_DIFFERENT_HANDS_FOR_BLACK
+
 SQUARES = [
     A9, A8, A7, A6, A5, A4, A3, A2, A1,
     B9, B8, B7, B6, B5, B4, B3, B2, B1,
@@ -217,7 +228,6 @@ BB_RANKS = [
     BB_H1 | BB_H2 | BB_H3 | BB_H4 | BB_H5 | BB_H6 | BB_H7 | BB_H8 | BB_H9,
     BB_I1 | BB_I2 | BB_I3 | BB_I4 | BB_I5 | BB_I6 | BB_I7 | BB_I8 | BB_I9,
 ]
-
 
 def shift_down(b):
     return (b << 9) & BB_ALL
@@ -1474,10 +1484,8 @@ class Board(object):
             array = DEFAULT_RANDOM_ARRAY
 
         if self.turn == WHITE:
-            zobrist_hash ^= array[2268]
+            zobrist_hash ^= array[ZOBRIST_TURN_OFFSET]
 
-        # pieces in hand pattern is
-        # 19 * 5 * 5 * 5 * 5 * 3 * 3 = 106875 < pow(2, 17)
         # just checking black side is okay in normal state
         i = 0
         factor = 1
@@ -1486,10 +1494,11 @@ class Board(object):
                 continue
             i += self.pieces_in_hand[BLACK][piece_type] * factor
             factor *= (max_in_hand + 1)
+        assert i < NB_DIFFERENT_HANDS_FOR_BLACK
 
         bit = bit_scan(i)
         while bit != -1 and bit is not None:
-            zobrist_hash ^= array[2269 + bit]
+            zobrist_hash ^= array[ZOBRIST_IN_HAND_OFFSET + bit]
             bit = bit_scan(i, bit + 1)
 
         return zobrist_hash
@@ -1682,12 +1691,9 @@ class SquareSet(object):
     def __hash__(self):
         return self.mask
 
-# NB_SQUARES * (14 piece types * (white or black) - 1) + 9 * (ranks - 1) + (files - 1) + ((white or black) - 1) + (current turn) + log2((19 pawn in hand) * (5 lance in hand) * (5 knight in hand) * (5 silver in hand) * (5 gold in hand) * (3 bishop) * (3 rook))
-#  = 2268 + 1 + 17 = 2286
-#
-# Genetation code example:
+# Generation code example:
 # import random
-# for i in range(2286):
+# for i in range(ZOBRIST_SIZE):
 #     if i % 4 == 0:
 #         print '    ',
 #     print '0x{0:016X},'.format(random.randint(0, 0xffffffffffffffffL)),
@@ -2268,3 +2274,5 @@ DEFAULT_RANDOM_ARRAY = [
     0x83951AF07CE062E6, 0x9C450B161AA1D50C, 0xBD26D0D5ACBC439B, 0x41EBFBF5687571E8,
     0x86D6113C636B6F29, 0x4C532A8DB8D2B468,
 ]
+
+assert len(DEFAULT_RANDOM_ARRAY) == ZOBRIST_SIZE
