@@ -84,6 +84,7 @@ NUMBER_JAPANESE_KANJI_SYMBOLS = [
 
 STARTING_SFEN = 'lnsgkgsnl/1r5b1/ppppppppp/9/9/9/PPPPPPPPP/1B5R1/LNSGKGSNL b - 1'
 
+NB_SQUARES = 81
 SQUARES = [
     A9, A8, A7, A6, A5, A4, A3, A2, A1,
     B9, B8, B7, B6, B5, B4, B3, B2, B1,
@@ -94,7 +95,7 @@ SQUARES = [
     G9, G8, G7, G6, G5, G4, G3, G2, G1,
     H9, H8, H7, H6, H5, H4, H3, H2, H1,
     I9, I8, I7, I6, I5, I4, I3, I2, I1,
-] = range(81)
+] = range(NB_SQUARES)
 
 SQUARES_L90 = [
     A1, B1, C1, D1, E1, F1, G1, H1, I1,
@@ -408,6 +409,14 @@ BB_SHIFT_L45 = [
      1, 11, 21, 31, 41, 51, 61, 71, 81
 ]
 
+assert NB_SQUARES == len(SQUARES_L90)  == \
+                     len(SQUARES_R45)  == \
+                     len(SQUARES_L45)  == \
+                     len(SQUARE_NAMES) == \
+                     len(BB_SQUARES)   == \
+                     len(BB_SHIFT_R45) == \
+                     len(BB_SHIFT_L45)
+
 BB_L45_ATTACKS = [[BB_VOID for i in range(128)] for k in SQUARES]
 BB_R45_ATTACKS = [[BB_VOID for i in range(128)] for k in SQUARES]
 
@@ -612,8 +621,8 @@ class Move(object):
         return self.usi()
 
     def __hash__(self):
-        # 7 bit is enought to represent 81 patterns
-        return self.to_square | (self.from_square or (81 + self.drop_piece_type)) << 7 | self.promotion << 14
+        # 7 bit is enought to represent NB_SQUARES patterns
+        return self.to_square | (self.from_square or (NB_SQUARES + self.drop_piece_type)) << 7 | self.promotion << 14
 
     @classmethod
     def from_usi(cls, usi):
@@ -780,7 +789,7 @@ class Board(object):
             piece_index = (piece_type - 1) * 2
         else:
             piece_index = (piece_type - 1) * 2 + 1
-        self.incremental_zobrist_hash ^= DEFAULT_RANDOM_ARRAY[81 * piece_index + 9 * rank_index(square) + file_index(square)]
+        self.incremental_zobrist_hash ^= DEFAULT_RANDOM_ARRAY[NB_SQUARES * piece_index + 9 * rank_index(square) + file_index(square)]
 
     def set_piece_at(self, square, piece, from_hand=False, into_hand=False):
         '''Sets a piece at the given square. An existing piece is replaced.'''
@@ -807,7 +816,7 @@ class Board(object):
             piece_index = (piece.piece_type - 1) * 2
         else:
             piece_index = (piece.piece_type - 1) * 2 + 1
-        self.incremental_zobrist_hash ^= DEFAULT_RANDOM_ARRAY[81 * piece_index + 9 * rank_index(square) + file_index(square)]
+        self.incremental_zobrist_hash ^= DEFAULT_RANDOM_ARRAY[NB_SQUARES * piece_index + 9 * rank_index(square) + file_index(square)]
 
     def generate_pseudo_legal_moves(self):
 
@@ -1673,7 +1682,7 @@ class SquareSet(object):
     def __hash__(self):
         return self.mask
 
-# 81 * (14 piece types * (white or black) - 1) + 9 * (ranks - 1) + (files - 1) + ((white or black) - 1) + (current turn) + log2((19 pawn in hand) * (5 lance in hand) * (5 knight in hand) * (5 silver in hand) * (5 gold in hand) * (3 bishop) * (3 rook))
+# NB_SQUARES * (14 piece types * (white or black) - 1) + 9 * (ranks - 1) + (files - 1) + ((white or black) - 1) + (current turn) + log2((19 pawn in hand) * (5 lance in hand) * (5 knight in hand) * (5 silver in hand) * (5 gold in hand) * (3 bishop) * (3 rook))
 #  = 2268 + 1 + 17 = 2286
 #
 # Genetation code example:
