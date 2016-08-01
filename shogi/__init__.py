@@ -51,9 +51,6 @@ MAX_PIECES_IN_HAND = [0,
         18, 4, 4, 4,
         4,
         2, 2,
-        0,
-        0, 0, 0, 0,
-        0, 0,
 ]
 
 PIECE_PROMOTED = [
@@ -71,11 +68,8 @@ PIECE_JAPANESE_SYMBOLS = [
     '\u7389', '\u3068', '\u674f', '\u572d', '\u5168', '\u99ac', '\u9f8d'
 ]
 
-assert len(PIECE_TYPES_WITH_NONE) == \
-       len(MAX_PIECES_IN_HAND) == \
-       len(PIECE_SYMBOLS) == \
-       len(PIECE_JAPANESE_SYMBOLS)
-assert len(PIECE_PROMOTED) < len(PIECE_TYPES_WITH_NONE)
+assert len(PIECE_PROMOTED) == len(MAX_PIECES_IN_HAND) < \
+       len(PIECE_TYPES_WITH_NONE) == len(PIECE_SYMBOLS) == len(PIECE_JAPANESE_SYMBOLS)
 
 NUMBER_JAPANESE_NUMBER_SYMBOLS = [
     '\uff10', '\uff11', '\uff12', '\uff13', '\uff14',
@@ -1476,14 +1470,14 @@ class Board(object):
         # pieces in hand pattern is
         # 19 * 5 * 5 * 5 * 5 * 3 * 3 = 106875 < pow(2, 17)
         # just checking black side is okay in normal state
-        i = (
-                self.pieces_in_hand[BLACK][ROOK] * 35625 +
-                self.pieces_in_hand[BLACK][BISHOP] * 11875 +
-                self.pieces_in_hand[BLACK][GOLD] * 2375 +
-                self.pieces_in_hand[BLACK][SILVER] * 475 +
-                self.pieces_in_hand[BLACK][KNIGHT] * 95 +
-                self.pieces_in_hand[BLACK][LANCE] * 19 +
-                self.pieces_in_hand[BLACK][PAWN])
+        i = 0
+        factor = 1
+        for piece_type, max_in_hand in enumerate(MAX_PIECES_IN_HAND):
+            if max_in_hand == 0:
+                continue
+            i += self.pieces_in_hand[BLACK][piece_type] * factor
+            factor *= (max_in_hand + 1)
+
         bit = bit_scan(i)
         while bit != -1 and bit is not None:
             zobrist_hash ^= array[2269 + bit]
