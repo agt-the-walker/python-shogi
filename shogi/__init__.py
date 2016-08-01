@@ -83,6 +83,7 @@ NUMBER_JAPANESE_KANJI_SYMBOLS = [
     '\u5341', '\u5341\u4e00', '\u5341\u4e8c', '\u5341\u4e09', '\u5341\u56db',
     '\u5341\u4e94', '\u5341\u516d', '\u5341\u4e03', '\u5341\u516b'
 ]
+assert len(NUMBER_JAPANESE_KANJI_SYMBOLS) == max(MAX_PIECES_IN_HAND) + 1  # first character means 0
 
 STARTING_SFEN = 'lnsgkgsnl/1r5b1/ppppppppp/9/9/9/PPPPPPPPP/1B5R1/LNSGKGSNL b - 1'
 
