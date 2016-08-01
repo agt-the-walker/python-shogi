@@ -31,6 +31,10 @@ class BoardTestCase(unittest.TestCase):
         self.assertEqual(repr(board_none), repr(board_sfen))
         self.assertEqual(board_none.turn, shogi.BLACK)
 
+    def test_checkmate(self):
+        board = shogi.Board('4k4/4G4/4P4/9/9/9/9/9/9 b - 1')
+        self.assertTrue(board.is_checkmate)
+
     def test_stalemate(self):
         board = shogi.Board('+R+N+SGKG+S+N+R/+B+N+SG+LG+S+N+B/P+LPP+LPP+LP/1P2P2P1/9/9/9/9/6k2 b - 200')
         self.assertEqual(len(board.pseudo_legal_moves), 0)
