@@ -657,20 +657,12 @@ class Move(object):
 
 
 class Occupied(object):
-    def __init__(self, occupied_by_black, occupied_by_white):
-        self.by_color = [occupied_by_black, occupied_by_white]
-        self.bits = occupied_by_black | occupied_by_white
+    def __init__(self):
+        self.by_color = [BB_VOID, BB_VOID]
+        self.bits = BB_VOID
         self.l45 = BB_VOID
         self.r45 = BB_VOID
         self.l90 = BB_VOID
-        self.update_rotated()
-
-    def update_rotated(self):
-        for i in SQUARES:
-            if BB_SQUARES[i] & self.bits:
-                self.l90 |= BB_SQUARES_L90[i]
-                self.r45 |= BB_SQUARES_R45[i]
-                self.l45 |= BB_SQUARES_L45[i]
 
     def __getitem__(self, key):
         if key in COLORS:
@@ -727,7 +719,7 @@ class Board(object):
         self.piece_bb = [BB_VOID] * len(PIECE_TYPES_WITH_NONE)
         self.pieces_in_hand = [collections.Counter(), collections.Counter()]
 
-        self.occupied = Occupied(BB_VOID, BB_VOID)
+        self.occupied = Occupied()
 
         self.king_squares = [None, None]
         self.pieces = [NONE for i in SQUARES]
@@ -1507,23 +1499,7 @@ class Board(object):
         if array is None:
             return self.incremental_zobrist_hash
 
-        zobrist_hash = 0
-
-        squares = self.occupied[BLACK]
-        square = bit_scan(squares)
-        while square != -1 and square is not None:
-            piece_index = (self.piece_type_at(square) - 1) * 2
-            zobrist_hash ^= array[81 * piece_index + 9 * rank_index(square) + file_index(square)]
-            square = bit_scan(squares, square + 1)
-
-        squares = self.occupied[WHITE]
-        square = bit_scan(squares)
-        while square != -1 and square is not None:
-            piece_index = (self.piece_type_at(square) - 1) * 2 + 1
-            zobrist_hash ^= array[81 * piece_index + 9 * rank_index(square) + file_index(square)]
-            square = bit_scan(squares, square + 1)
-
-        return zobrist_hash
+        return 0
 
 
 class PseudoLegalMoveGenerator(object):
