@@ -876,39 +876,23 @@ class Board(object):
             piece_index = (piece.piece_type - 1) * 2 + 1
         self.incremental_zobrist_hash ^= DEFAULT_RANDOM_ARRAY[81 * piece_index + 9 * rank_index(square) + file_index(square)]
 
-    def generate_pseudo_legal_moves(self, pawns=True, lances=True, knights=True, silvers=True, golds=True,
-            bishops=True, rooks=True,
-            kings=True,
-            prom_pawns=True, prom_lances=True, prom_knights=True, prom_silvers=True, prom_bishops=True, prom_rooks=True,
-            pawns_drop=True, lances_drop=True, knights_drop=True, silvers_drop=True, golds_drop=True,
-            bishops_drop=True, rooks_drop=True):
-
-        move_flags = [False,
-                      pawns, lances, knights, silvers,
-                      golds, bishops, rooks,
-                      kings,
-                      prom_pawns, prom_lances, prom_knights, prom_silvers,
-                      prom_bishops, prom_rooks]
-        drop_flags = [False,
-                      pawns_drop, lances_drop, knights_drop, silvers_drop,
-                      golds_drop, bishops_drop, rooks_drop]
+    def generate_pseudo_legal_moves(self):
 
         for piece_type in PIECE_TYPES:
             # piece move
-            if move_flags[piece_type]:
-                movers = self.piece_bb[piece_type] & self.occupied[self.turn]
-                from_square = bit_scan(movers)
+            movers = self.piece_bb[piece_type] & self.occupied[self.turn]
+            from_square = bit_scan(movers)
 
-                while from_square != -1 and from_square is not None:
-                    moves = Board.attacks_from(piece_type, from_square, self.occupied, self.turn) & ~self.occupied[self.turn]
-                    to_square = bit_scan(moves)
-                    while to_square != - 1 and to_square is not None:
-                        if can_move_without_promotion(to_square, piece_type, self.turn):
-                            yield Move(from_square, to_square)
-                        if can_promote(from_square, piece_type, self.turn) or can_promote(to_square, piece_type, self.turn):
-                            yield Move(from_square, to_square, True)
-                        to_square = bit_scan(moves, to_square + 1)
-                    from_square = bit_scan(movers, from_square + 1)
+            while from_square != -1 and from_square is not None:
+                moves = Board.attacks_from(piece_type, from_square, self.occupied, self.turn) & ~self.occupied[self.turn]
+                to_square = bit_scan(moves)
+                while to_square != - 1 and to_square is not None:
+                    if can_move_without_promotion(to_square, piece_type, self.turn):
+                        yield Move(from_square, to_square)
+                    if can_promote(from_square, piece_type, self.turn) or can_promote(to_square, piece_type, self.turn):
+                        yield Move(from_square, to_square, True)
+                    to_square = bit_scan(moves, to_square + 1)
+                from_square = bit_scan(movers, from_square + 1)
 
         # Drop pieces in hand.
         moves = self.occupied.non_occupied()
@@ -918,7 +902,7 @@ class Board(object):
             for piece_type in range(PAWN, KING):
                 # Check having the piece in hand, can move after place
                 # and double pawn
-                if drop_flags[piece_type] and self.has_piece_in_hand(piece_type, self.turn) and \
+                if self.has_piece_in_hand(piece_type, self.turn) and \
                         can_move_without_promotion(to_square, piece_type, self.turn) and \
                         not self.is_double_pawn(to_square, piece_type):
                     yield Move(None, to_square, False, piece_type)
@@ -1034,14 +1018,9 @@ class Board(object):
 
         return True
 
-    def generate_legal_moves(self, pawns=True, lances=True, knights=True, silvers=True, golds=True, bishops=True,
-            rooks=True, king=True,
-            pawns_drop=True, lances_drop=True, knights_drop=True, silvers_drop=True, golds_drop=True,
-            bishops_drop=True, rooks_drop=True):
-        return (move for move in self.generate_pseudo_legal_moves(
-                pawns, lances, knights, silvers, golds, bishops, rooks, king,
-                pawns_drop, lances_drop, knights_drop, silvers_drop, golds_drop, bishops_drop, rooks_drop
-            ) if not self.is_suicide_or_check_by_dropping_pawn(move))
+    def generate_legal_moves(self):
+        return (move for move in self.generate_pseudo_legal_moves()
+                if not self.is_suicide_or_check_by_dropping_pawn(move))
 
     def is_pseudo_legal(self, move):
         # Null moves are not pseudo legal.
