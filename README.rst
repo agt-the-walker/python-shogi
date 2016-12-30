@@ -4,8 +4,8 @@ python-shogi: a pure Python shogi library
 .. image:: https://travis-ci.org/agt-the-walker/python-shogi.svg
     :target: https://travis-ci.org/agt-the-walker/python-shogi
 
-.. image:: https://coveralls.io/repos/agt-the-walker/python-shogi/badge.svg
-    :target: https://coveralls.io/r/agt-the-walker/python-shogi
+.. image:: https://coveralls.io/repos/github/agt-the-walker/python-shogi/badge.svg?branch=master
+    :target: https://coveralls.io/github/agt-the-walker/python-shogi?branch=master
 
 .. image:: https://landscape.io/github/agt-the-walker/python-shogi/master/landscape.svg?style=flat
     :target: https://landscape.io/github/agt-the-walker/python-shogi
